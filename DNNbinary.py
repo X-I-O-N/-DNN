@@ -1,3 +1,5 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="1"  
 import numpy
 import pandas
 from keras.models import Sequential
@@ -59,7 +61,7 @@ def create_smaller():
 	return model
 estimators = []
 estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
+estimators.append(('mlp', KerasClassifier(build_fn=create_larger, epochs=100, batch_size=5, verbose=0)))
 pipeline = Pipeline(estimators)
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 results = cross_val_score(pipeline, X, encoded_Y, cv=kfold)
