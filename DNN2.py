@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 import numpy
 import pandas
 from keras.models import Sequential
@@ -8,7 +9,6 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import Pipeline
-from __future__ import division, print_function, absolute_import
 import tflearn
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.conv import conv_2d, max_pool_2d, avg_pool_2d
