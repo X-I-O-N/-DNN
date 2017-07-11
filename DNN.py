@@ -31,7 +31,7 @@ dummy_y = np_utils.to_categorical(encoded_Y)
 def baseline_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(8, input_dim=4, activation='relu'))
+	model.add(Dense(8, input_dim=1288, activation='relu'))
 	model.add(Dense(3, activation='softmax'))
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
