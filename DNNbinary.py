@@ -74,12 +74,19 @@ def wider_model():
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model
 
-modelname = "DNNGPBLEND"
+modelname = "gp"
 if modelname == "keras":
 	estimators = []
 	estimators.append(('standardize', StandardScaler()))
 	estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
 	models = Pipeline(estimators)
+if modelname == "gp":
+	models = SymbolicRegressor(population_size=5000,
+                           generations=20, stopping_criteria=0.01,
+                           p_crossover=0.7, p_subtree_mutation=0.1,
+                           p_hoist_mutation=0.05, p_point_mutation=0.1,
+                           max_samples=0.9, verbose=1,
+                           parsimony_coefficient=0.01, random_state=0)
 if modelname == "DNNGPBLEND":
 	estimators = []
 	estimators.append(('standardize', StandardScaler()))
