@@ -1,3 +1,5 @@
+import sklearn
+from sklearn import *
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="1,2,3"  
 import numpy
@@ -114,8 +116,13 @@ if modelname == "DNNGPVOTE":
                            max_samples=0.9, verbose=1,
                            parsimony_coefficient=0.01, random_state=0)
 	models = [sklearn.ensemble.VotingClassifier(estimators=[('DNN1', DNN), ('gp', est_gp)], voting='soft', weights=[1, 1])]
-kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-results = cross_val_score(models, X, encoded_Y, cv=kfold)
+
+models.fit(X, Y)
+score = models.score(X, Y)
+
+print('Done. Score:', score)
+#kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+#results = cross_val_score(models, X, encoded_Y, cv=kfold)
 #results = cross_val_score(models, X, Y, cv=kfold)
-print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
-print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+#print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+#print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
