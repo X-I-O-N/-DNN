@@ -120,19 +120,14 @@ if modelname == "DNNTEST":
 	scale = StandardScaler()
 	X = scale.fit_transform(X)
 	Y = scale.fit_transform(Y)
-	DNN = KerasRegressor(build_fn=wider_model, epochs=1, batch_size=5, verbose=0)
-	est_gp = SymbolicRegressor(population_size=5,
-                           generations=20, stopping_criteria=0.01,
-                           p_crossover=0.7, p_subtree_mutation=0.1,
-                           p_hoist_mutation=0.05, p_point_mutation=0.1,
-                           max_samples=0.9, verbose=1,
-                           parsimony_coefficient=0.01, random_state=0)
+	DNN = KerasRegressor(build_fn=create_smaller, epochs=1, batch_size=5, verbose=0)
+	est_gp = sklearn.tree.DecisionTreeClassifier(max_depth=4)
 	lr = lm.LogisticRegression()
  	#gbc = sklearn.ensemble.GradientBoostingClassifier()
-	models = [StackingRegressor(regressors=[DNN,est_gp], meta_regressor=lr)]
+	models = [StackingClassifier(classifiers=[DNN,est_gp], meta_classifier=lr)]
 
-models.fit(X, Y)
-score = models.score(X, Y)
+#models.fit(X, Y)
+#score = models.score(X, Y)
 
 print('Done. Score:', score)
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
