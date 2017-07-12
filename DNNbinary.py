@@ -58,8 +58,7 @@ def create_larger():
 	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
 
-# smaller model
-def create_smaller():
+# smaller modeldef create_smaller():
 	# create model
 	model = Sequential()
 	model.add(Dense(644, input_dim=1288, kernel_initializer='normal', activation='relu'))
@@ -86,7 +85,7 @@ if modelname == "keras":
 	models = Pipeline(estimators)
 if modelname == "gp":
 	models = SymbolicRegressor(population_size=5000,
-                           generations=20, stopping_criteria=0.01,
+                           generations=2, stopping_criteria=0.01,
                            p_crossover=0.7, p_subtree_mutation=0.1,
                            p_hoist_mutation=0.05, p_point_mutation=0.1,
                            max_samples=0.9, verbose=1,
@@ -167,6 +166,7 @@ print "all done Teerth"
 
 
 print (model_stacker.coef_)
+print (model_stacker.feature_importances_)
 
 #models.fit(X, Y)
 #score = models.score(X, Y)
