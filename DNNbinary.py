@@ -1,3 +1,4 @@
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, ExtraTreesClassifier
 import pickle
 import sklearn
 from sklearn import *
@@ -58,7 +59,8 @@ def create_larger():
 	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
 
-# smaller modeldef create_smaller():
+# smaller model
+def create_smaller():
 	# create model
 	model = Sequential()
 	model.add(Dense(644, input_dim=1288, kernel_initializer='normal', activation='relu'))
