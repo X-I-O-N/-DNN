@@ -166,7 +166,16 @@ filename = 'blendedmodel.sav'
 pickle.dump(model_stacker, open(filename, 'wb'))
 print "all done Teerth"
 
+importances = model_stacker.feature_importances_
+std = np.std([tree.feature_importances_ for tree in model_stacker.estimators_],
+             axis=0)
+indices = np.argsort(importances)[::-1]
 
+# Print the feature ranking
+print("Feature ranking:")
+
+for f in range(X.shape[1]):
+    print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
 
 #print (model_stacker.coef_)
 print (model_stacker.feature_importances_)
