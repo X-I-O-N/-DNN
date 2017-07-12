@@ -156,7 +156,8 @@ new_Y = np.array(new_Y).reshape(len(new_Y), 1)
 
 # <codecell>
 
-model_stacker = lm.LogisticRegression()
+#model_stacker = lm.LogisticRegression()
+model_stacker = GradientBoostingClassifier(n_estimators =200)
 print np.mean(cross_val_score(model_stacker, new_X, new_Y.reshape(new_Y.shape[0]), cv=5))
 
 model_stacker.fit(new_X, new_Y.reshape(new_Y.shape[0]))
@@ -167,7 +168,7 @@ print "all done Teerth"
 
 
 
-print (model_stacker.coef_)
+#print (model_stacker.coef_)
 print (model_stacker.feature_importances_)
 
 #models.fit(X, Y)
