@@ -122,14 +122,15 @@ if modelname == "DNNTEST":
 	Y = scale.fit_transform(Y)
 	DNN = KerasRegressor(build_fn=create_smaller, epochs=1, batch_size=5, verbose=0)
 	est_gp = sklearn.tree.DecisionTreeClassifier(max_depth=4)
-	lr = lm.LogisticRegression()
+	#lr = lm.LogisticRegression()
  	#gbc = sklearn.ensemble.GradientBoostingClassifier()
-	models = [StackingClassifier(classifiers=[DNN,est_gp], meta_classifier=lr)]
+	models = [sklearn.ensemble.VotingClassifier(estimators=[('DNN1', DNN), ('DNN2', est_gp)], voting='soft', weights=[1, 1])]
+
 
 #models.fit(X, Y)
 #score = models.score(X, Y)
 
-print('Done. Score:', score)
+#print('Done. Score:', score)
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 #results = cross_val_score(models, X, encoded_Y, cv=kfold)
 results = cross_val_score(models, X, Y, cv=kfold)
