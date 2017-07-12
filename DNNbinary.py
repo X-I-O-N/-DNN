@@ -70,7 +70,7 @@ def create_smaller():
 def wider_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(20, input_dim=13, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(644, input_dim=1288, kernel_initializer='normal', activation='relu'))
 	model.add(Dense(1, kernel_initializer='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -120,8 +120,16 @@ if modelname == "DNNTEST":
 	scale = StandardScaler()
 	X = scale.fit_transform(X)
 	Y = scale.fit_transform(Y)
-	
-	models = KerasRegressor(build_fn=wider_model, epochs=1, batch_size=5, verbose=0)
+	DNN = KerasRegressor(build_fn=wider_model, epochs=1, batch_size=5, verbose=0)
+	est_gp = SymbolicRegressor(population_size=5,
+                           generations=20, stopping_criteria=0.01,
+                           p_crossover=0.7, p_subtree_mutation=0.1,
+                           p_hoist_mutation=0.05, p_point_mutation=0.1,
+                           max_samples=0.9, verbose=1,
+                           parsimony_coefficient=0.01, random_state=0)
+	lr = lm.LogisticRegression()
+ 	#gbc = sklearn.ensemble.GradientBoostingClassifier()
+	models = [StackingRegressor(regressors=[DNN,est_gp], meta_regressor=lr)]
 
 models.fit(X, Y)
 score = models.score(X, Y)
