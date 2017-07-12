@@ -5,6 +5,7 @@ import pandas
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
+from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
@@ -71,7 +72,7 @@ if modelname == "keras":
 if modelname == "DNNGPBLEND":
 	estimators = []
 	estimators.append(('standardize', StandardScaler()))
-	estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
+	estimators.append(('mlp', KerasRegressor(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
 	DNN = Pipeline(estimators)
 	est_gp = SymbolicRegressor(population_size=5000,
                            generations=20, stopping_criteria=0.01,
