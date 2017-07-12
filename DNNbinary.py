@@ -3,6 +3,7 @@ from sklearn import *
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="1,2,3"  
 import numpy
+import numpy as np
 import pandas
 from keras.models import Sequential
 from keras.layers import Dense
@@ -27,7 +28,7 @@ dataset = dataframe.values
 # split into input (X) and output (Y) variables
 #X = dataset[:,0:1288].astype(float)
 X = dataset[:,0:1288]
-Y = dataset[:,1288]
+y = dataset[:,1288]
 
 # encode class values as integers
 #encoder = LabelEncoder()
@@ -76,7 +77,7 @@ def wider_model():
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model
 
-modelname = "DNNTEST"
+modelname = "keras"
 if modelname == "keras":
 	estimators = []
 	estimators.append(('standardize', StandardScaler()))
@@ -126,13 +127,52 @@ if modelname == "DNNTEST":
  	#gbc = sklearn.ensemble.GradientBoostingClassifier()
 	models = [sklearn.ensemble.VotingClassifier(estimators=[('DNN1', DNN), ('DNN2', est_gp)], voting='soft', weights=[1, 1])]
 
+# BEST IS 133
+model_ridge = lm.LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=9081)
+model_randomforest = RandomForestClassifier(n_estimators = 200)
+model_lasso = lm.LogisticRegression(penalty = "l1", C = 9081)
+model_gbt = GradientBoostingClassifier(n_estimators = 200)
+
+pred_ridge = []
+pred_randomforest = []
+pred_lasso = []
+pred_gbt = []
+new_Y = []
+for i in range(10):
+    indxs = np.arange(i, X.shape[0], 10)
+    indxs_to_fit = list(set(range(X.shape[0])) - set(np.arange(i, X.shape[0], 10)))
+    pred_ridge = pred_ridge + list(model_ridge.fit(X[indxs_to_fit[:]], y[indxs_to_fit[:]]).predict_proba(X[indxs,:])[:,1])
+    pred_randomforest = pred_randomforest + list(model_randomforest.fit(X[indxs_to_fit[:]], y[indxs_to_fit[:]]).predict_proba(X[indxs,:])[:,1])
+    pred_lasso = pred_lasso + list(model_lasso.fit(X[indxs_to_fit[:]], y[indxs_to_fit[:]]).predict_proba(X[indxs,:])[:,1])
+    pred_gbt = pred_gbt + list(model_gbt.fit(X[indxs_to_fit[:]], y[indxs_to_fit[:]]).predict_proba(X[indxs,:])[:,1])
+    new_Y = new_Y + list(y[indxs[:]])
+	
+                                                                   
+new_X = np.hstack((np.array(pred_ridge).reshape(len(pred_ridge), 1), np.array(pred_randomforest).reshape(len(pred_randomforest), 1), np.array(pred_lasso).reshape(len(pred_lasso), 1), np.array(pred_gbt).reshape(len(pred_gbt), 1)))
+print new_X
+new_Y = np.array(new_Y).reshape(len(new_Y), 1)
+
+# <codecell>
+
+model_stacker = lm.LogisticRegression()
+print np.mean(cross_val_score(model_stacker, new_X, new_Y.reshape(new_Y.shape[0]), cv=5))
+
+model_stacker.fit(new_X, new_Y.reshape(new_Y.shape[0]))
+#save model to disk
+filename = 'blendedmodel.sav'
+pickle.dump(model_stacker, open(filename, 'wb'))
+print "all done Teerth"
+
+
+
+print (model_stacker.coef_)
 
 #models.fit(X, Y)
 #score = models.score(X, Y)
 
 #print('Done. Score:', score)
-kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+#kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 #results = cross_val_score(models, X, encoded_Y, cv=kfold)
-results = cross_val_score(models, X, Y, cv=kfold)
-print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+#results = cross_val_score(models, X, Y, cv=kfold)
+#print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 #print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
