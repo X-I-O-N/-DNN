@@ -179,8 +179,15 @@ for f in range(X.shape[1]):
     print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
 
 #print (model_stacker.coef_)
-print (model_stacker.feature_importances_)
-
+#print (model_stacker.feature_importances_)
+# Plot the feature importances of the forest
+plt.figure()
+plt.title("Feature importances")
+plt.bar(range(X.shape[1]), importances[indices],
+       color="r", yerr=std[indices], align="center")
+plt.xticks(range(X.shape[1]), indices)
+plt.xlim([-1, X.shape[1]])
+plt.show()
 #models.fit(X, Y)
 #score = models.score(X, Y)
 
