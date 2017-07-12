@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="1"  
+os.environ["CUDA_VISIBLE_DEVICES"]="1,2,3"  
 import numpy
 import pandas
 from keras.models import Sequential
@@ -10,8 +10,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-
-
+from gplearn.genetic import SymbolicRegressor
+from mlxtend.classifier import StackingClassifier
+import sklearn.linear_model as lm
 # fix random seed for reproducibility
 seed = 7
 numpy.random.seed(seed)
@@ -59,10 +60,28 @@ def create_smaller():
 	# Compile model
 	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
-estimators = []
-estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=200, batch_size=5, verbose=0)))
-pipeline = Pipeline(estimators)
+
+modelname = "DNNGPBLEND"
+if modelname == "keras":
+	estimators = []
+	estimators.append(('standardize', StandardScaler()))
+	estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
+	models = Pipeline(estimators)
+if modelname == "DNNGPBLEND":
+	estimators = []
+	estimators.append(('standardize', StandardScaler()))
+	estimators.append(('mlp', KerasClassifier(build_fn=create_smaller, epochs=100, batch_size=5, verbose=0)))
+	DNN = Pipeline(estimators)
+	est_gp = SymbolicRegressor(population_size=5000,
+                           generations=20, stopping_criteria=0.01,
+                           p_crossover=0.7, p_subtree_mutation=0.1,
+                           p_hoist_mutation=0.05, p_point_mutation=0.1,
+                           max_samples=0.9, verbose=1,
+                           parsimony_coefficient=0.01, random_state=0)
+	lr = lm.LogisticRegression()
+ 	#gbc = sklearn.ensemble.GradientBoostingClassifier()
+	models = [StackingClassifier(classifiers=[DNN,est_gp], meta_classifier=lr)]
+
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-results = cross_val_score(pipeline, X, encoded_Y, cv=kfold)
-print("Smaller: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+results = cross_val_score(models, X, encoded_Y, cv=kfold)
+print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
