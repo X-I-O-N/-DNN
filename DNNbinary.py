@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from gplearn.genetic import SymbolicRegressor
 from mlxtend.classifier import StackingClassifier
+from mlxtend.regressor import StackingRegressor
 import sklearn.linear_model as lm
 # fix random seed for reproducibility
 seed = 7
@@ -80,7 +81,7 @@ if modelname == "DNNGPBLEND":
                            parsimony_coefficient=0.01, random_state=0)
 	lr = lm.LogisticRegression()
  	#gbc = sklearn.ensemble.GradientBoostingClassifier()
-	models = [StackingClassifier(classifiers=[DNN,est_gp], meta_classifier=lr)]
+	models = [StackingRegressor(regressors=[DNN,est_gp], meta_regressor=lr)]
 
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 results = cross_val_score(models, X, encoded_Y, cv=kfold)
