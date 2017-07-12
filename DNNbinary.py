@@ -76,7 +76,7 @@ def wider_model():
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model
 
-modelname = "DTGBLEND"
+modelname = "DNNTEST"
 if modelname == "keras":
 	estimators = []
 	estimators.append(('standardize', StandardScaler()))
@@ -116,25 +116,19 @@ if modelname == "DTGPBLEND":
  	#gbc = sklearn.ensemble.GradientBoostingClassifier()
 	models = [StackingRegressor(regressors=[clf1,est_gp], meta_regressor=lr)]
 
-if modelname == "DNNGPVOTE":
-	estimators = []
-	estimators.append(('standardize', StandardScaler()))
-	estimators.append(('mlp', KerasRegressor(build_fn=wider_model, epochs=100, batch_size=5, verbose=0)))
-	DNN = Pipeline(estimators)
-	est_gp = SymbolicRegressor(population_size=5000,
-                           generations=20, stopping_criteria=0.01,
-                           p_crossover=0.7, p_subtree_mutation=0.1,
-                           p_hoist_mutation=0.05, p_point_mutation=0.1,
-                           max_samples=0.9, verbose=1,
-                           parsimony_coefficient=0.01, random_state=0)
-	models = [sklearn.ensemble.VotingClassifier(estimators=[('DNN1', DNN), ('gp', est_gp)], voting='soft', weights=[1, 1])]
+if modelname == "DNNTEST":
+	scale = StandardScaler()
+	X = scale.fit_transform(X)
+	Y = scale.fit_transform(Y)
+	
+	models = KerasRegressor(build_fn=wider_model, epochs=1, batch_size=5, verbose=0)
 
 models.fit(X, Y)
 score = models.score(X, Y)
 
 print('Done. Score:', score)
-#kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 #results = cross_val_score(models, X, encoded_Y, cv=kfold)
-#results = cross_val_score(models, X, Y, cv=kfold)
-#print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+results = cross_val_score(models, X, Y, cv=kfold)
+print("Accuracy: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 #print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
