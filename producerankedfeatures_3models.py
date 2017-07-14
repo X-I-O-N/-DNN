@@ -1,4 +1,4 @@
-#Trimmed to only produce ranked features using 1 model only (trees)
+#Trimmed to only produce ranked features using 3 models only
 import matplotlib.pyplot as plt
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, ExtraTreesClassifier
 import pickle
@@ -9,11 +9,11 @@ os.environ["CUDA_VISIBLE_DEVICES"]="1,2,3"
 import numpy
 import numpy as np
 import pandas
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.wrappers.scikit_learn import KerasClassifier
-from keras.wrappers.scikit_learn import KerasRegressor
-from sklearn.model_selection import cross_val_score
+#from keras.models import Sequential
+#from keras.layers import Dense
+#from keras.wrappers.scikit_learn import KerasClassifier
+#from keras.wrappers.scikit_learn import KerasRegressor
+#from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -23,7 +23,7 @@ from mlxtend.classifier import StackingClassifier
 from mlxtend.regressor import StackingRegressor
 import sklearn.linear_model as lm
 from xgboost import XGBClassifier
-from xgboost import plot_importance
+#from xgboost import plot_importance
 # fix random seed for reproducibility
 seed = 7
 numpy.random.seed(seed)
@@ -45,7 +45,7 @@ forest = ExtraTreesClassifier(n_estimators=250,
                               random_state=0)
 xgb = XGBClassifier()
 xgb.fit(X, y)
-plot_importance(xgb)
+#plot_importance(xgb)
 DTC = sklearn.tree.DecisionTreeClassifier()
 DTC.fit(X, y)
 
@@ -70,10 +70,10 @@ for f in range(X.shape[1]):
     print("%d. %d %f" % (f + 1, (indices[f])+1, importances[indices[f]]))
 
 # Plot the feature importances of the forest
-plt.figure()
-plt.title("Feature importances")
-plt.bar(range(X.shape[1]), importances[indices],
-       color="r", yerr=std[indices], align="center")
-plt.xticks(range(X.shape[1]), indices)
-plt.xlim([-1, X.shape[1]])
-plt.show()
+#plt.figure()
+#plt.title("Feature importances")
+#plt.bar(range(X.shape[1]), importances[indices],
+ #      color="r", yerr=std[indices], align="center")
+#plt.xticks(range(X.shape[1]), indices)
+#plt.xlim([-1, X.shape[1]])
+#plt.show()
