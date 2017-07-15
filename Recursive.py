@@ -30,7 +30,7 @@ print "building the first forest"
 rf = RandomForestClassifier(n_estimators = 500, min_samples_split = 2, n_jobs = -1, verbose = 1)
 rf.fit(xTrain, yTrain)
 importances = pandas.DataFrame({'name':x.columns,'imp':rf.feature_importances_
-                                }).sort(['imp'], ascending = False).reset_index(drop = True)
+                                }).sort_values(['imp'], ascending = False).reset_index(drop = True)
 
 cm, sensitivity, specificity, weightedAccuracy = get_enhanced_confusion_matrix(yTest, rf.predict(xTest), [0,1])
 numFeatures = len(x.columns)
