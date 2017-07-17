@@ -88,7 +88,7 @@ selector = RFECV(estimator=classifier, step=3,
 selector.fit(X, y)
 
 print('The optimal number of features is {}'.format(selector.n_features_))
-features = [f for f,s in zip(X_train.columns, selector.support_) if s]
+features = [f for f,s in zip(X.columns, selector.support_) if s]
 print('The selected features are:')
 print ('{}'.format(features))
 
