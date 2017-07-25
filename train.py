@@ -18,7 +18,7 @@ import pandas as pd
 # Loads numpy
 import numpy as np
 
-dataframe = pandas.read_csv("L-all-blip-else-trainingset.csv", header=None)
+dataframe = pandas.read_csv("EURUSDmulticlasscsv.csv", header=None)
 
 dataset = dataframe.values
 
