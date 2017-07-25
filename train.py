@@ -18,23 +18,17 @@ import pandas as pd
 # Loads numpy
 import numpy as np
 
-#Parses the arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', dest='dataset', required=True,
-                    help='dataset filename')
-args = parser.parse_args()
+dataframe = pandas.read_csv("L-all-blip-else-trainingset.csv", header=None)
 
-#Reads the dataset
-df = pd.read_csv(args.dataset)
+dataset = dataframe.values
 
-#Reads how many features
-feature_names=df.columns[:-1]
+# split into input (X) and output (Y) variables
 
-#Reads the training data
-X = df.loc[:,feature_names]
+#X = dataset[:,0:4050].astype(float)
 
-#Reads the labels
-y = df.loc[:,'s']
+X = dataset[:,0:34]
+
+y = dataset[:,34]
 
 model_ridge = lm.LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=9081)
 model_randomforest = RandomForestClassifier(n_estimators = 200)
