@@ -47,14 +47,14 @@ clf5 = sklearn.ensemble.AdaBoostClassifier(base_estimator=clf0, n_estimators=500
 clf6 = sklearn.ensemble.AdaBoostClassifier(base_estimator=clf1, n_estimators=500, learning_rate=0.0001, algorithm='SAMME.R', random_state=None)
 clf7 = sklearn.ensemble.AdaBoostClassifier(base_estimator=clf2, n_estimators=500, learning_rate=0.0001, algorithm='SAMME.R', random_state=None)
 clf8 = sklearn.ensemble.AdaBoostClassifier(base_estimator=clf3, n_estimators=500, learning_rate=0.0001, algorithm='SAMME.R', random_state=None)
-clf9 = sklearn.ensemble.AdaBoostClassifier(base_estimator=extra, n_estimators=500, learning_rate=0.0001, algorithm='SAMME.R', random_state=None)
+clf9 = sklearn.ensemble.AdaBoostClassifier(base_estimator=extra, n_estimators=500, learning_rate=0.0001, algorithm='SAMME', random_state=None)
 eclf2 = EnsembleVoteClassifier(clfs=[clf5, clf6, clf7, clf8, clf9], weights=[1,1,1,1,1])
 
-clf10 = sklearn.ensemble.BaggingClassifier(base_estimator=clf0, n_estimators=500, max_samples=10000, max_features=59, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
-clf11 = sklearn.ensemble.BaggingClassifier(base_estimator=clf1, n_estimators=500, max_samples=10000, max_features=59, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
-clf12 = sklearn.ensemble.BaggingClassifier(base_estimator=clf2, n_estimators=500, max_samples=10000, max_features=59, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
-clf13 = sklearn.ensemble.BaggingClassifier(base_estimator=clf3, n_estimators=500, max_samples=10000, max_features=59, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
-clf14 = sklearn.ensemble.BaggingClassifier(base_estimator=clf4, n_estimators=500, max_samples=10000, max_features=59, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
+clf10 = sklearn.ensemble.BaggingClassifier(base_estimator=clf0, n_estimators=500, max_samples=0.3, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
+clf11 = sklearn.ensemble.BaggingClassifier(base_estimator=clf1, n_estimators=500, max_samples=0.3, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
+clf12 = sklearn.ensemble.BaggingClassifier(base_estimator=clf2, n_estimators=500, max_samples=0.3, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
+clf13 = sklearn.ensemble.BaggingClassifier(base_estimator=clf3, n_estimators=500, max_samples=0.3, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
+clf14 = sklearn.ensemble.BaggingClassifier(base_estimator=clf4, n_estimators=500, max_samples=0.3, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=-1, random_state=None, verbose=0)
 eclf3 = EnsembleVoteClassifier(clfs=[clf10, clf11, clf12, clf13, clf14], weights=[1,1,1,1,1])
 
 lr = LogisticRegression()
@@ -63,9 +63,7 @@ seclf = StackingClassifier(classifiers=[eclf1, eclf2, eclf3],
 print('3-fold cross validation:\n')
 
 for eclf, label in zip([eclf1, eclf2, eclf3, seclf], 
-                      ['REG',
-                       'ADABOOST', 
-                       'BAGGED', 
+                      [ 'BAGGED', 
                        'StackingClassifier']):
 
     scores = model_selection.cross_val_score(eclf, X, y, 
