@@ -63,7 +63,9 @@ seclf = StackingClassifier(classifiers=[eclf1, eclf2, eclf3],
 print('3-fold cross validation:\n')
 
 for eclf, label in zip([eclf1, eclf2, eclf3, seclf], 
-                      [ 'BAGGED', 
+                      [ 'REG',
+			'ADABOOST',
+			'BAGGED', 
                        'StackingClassifier']):
 
     scores = model_selection.cross_val_score(eclf, X, y, 
