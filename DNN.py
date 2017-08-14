@@ -36,6 +36,14 @@ def baseline_model():
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
+def deeper_model():
+    model = Sequential()
+    model.add(Dense(4, input_dim=4 , activation= "relu" ))
+    model.add(Dense(100, activation="relu"))
+    model.add(Dense(100, activation="relu"))
+    model.add(Dense(3, activation="sigmoid"))
+    model.compile(loss="categorical_crossentropy" , optimizer="adam" , metrics=["accuracy"])
+    return model
 	
 estimator = KerasClassifier(build_fn=baseline_model, epochs=200, batch_size=5, verbose=0)
 
